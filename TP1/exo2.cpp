@@ -38,6 +38,7 @@ void produce_matrix(int **matrix1, int **matrix2, int **matrix3, int n) {
     }
     cout << "fin de la multiplication des deux matrices" << endl;
 }
+
 void display_matrix(int **matrix, int n) {
     cout << "Affichage de la matrice..." << endl;
     for (int i = 0; i < n; i++)
