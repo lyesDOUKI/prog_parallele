@@ -52,14 +52,14 @@ void display_matrix(int **matrix, int n) {
     cout << "fin de l'affichage de la matrice" << endl;
     
 }
-void free_matrix(int **matrix, int n) {
-    cout << "destruction de la matrice... "<<endl;
+void free_matrix(int **matrix, int n, int i) {
+    cout << "destruction de la matrice "<< i<<" ... "<<endl;
     for (int i = 0; i < n; i++)
     {
         delete[] matrix[i];
     }
     delete[] matrix;
-    cout << "fin de la destruction de la matrice" << endl;
+    cout << "fin de la destruction de la matrice " << i << endl;
 }
 
 int main(int argc, char *argv[]) {
@@ -83,9 +83,9 @@ int main(int argc, char *argv[]) {
     cout << "================================"<< endl;
     display_matrix(result_of_production, size_matrix);
     cout << "================================ FREE ================================ "<< endl;
-    free_matrix(matrix_one, size_matrix);
-    free_matrix(matrix_two, size_matrix);
-    free_matrix(result_of_production, size_matrix);
+    free_matrix(matrix_one, size_matrix, 1);
+    free_matrix(matrix_two, size_matrix, 2);
+    free_matrix(result_of_production, size_matrix, 3);
     cout << "================================ END FREE ================================ "<< endl;
     return 0;
 }
