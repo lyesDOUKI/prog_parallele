@@ -22,7 +22,7 @@ int main(int argc, char *argv[]) {
     cout << "================================"<< endl;
     matrix_two->print_matrix();
     cout << "================================ Multiplication ==============================="<< endl;
-    result_of_production->produce_matrix(matrix_one, matrix_two, result_of_production);
+    result_of_production->produce_matrixV3(matrix_one, matrix_two, result_of_production);
     cout << "================================"<< endl;
     result_of_production->print_matrix();
     cout << "================================ FREE ================================ "<< endl;
