@@ -18,13 +18,14 @@ int sumVector(vector<int> &vec)
 void sum_thread(vector<int> &vec,int debut,int fin, int &sum)
 {
     //sum=0;
-
+    int sum_thread=0;
     for(int i=debut;i<fin;i++)
     {
-        m.lock();
-        sum+=vec[i];
-        m.unlock();
-    }
+        sum_thread+=vec[i];
+    }   
+    m.lock();
+    sum+=sum_thread;
+    m.unlock();
 }
 
 vector<int> vec;
