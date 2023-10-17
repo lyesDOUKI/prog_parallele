@@ -27,9 +27,4 @@ void Tuile::affiche_tuile() {
     cout << endl;
 }
 
-/*sTuile::~Tuile() {
-    cout << "debut du destructeur tuile..." << endl;
-    delete[] tab;
-    cout << "fin du destructeur tuile" << endl;
-    }*/
 

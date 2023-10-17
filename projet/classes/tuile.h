@@ -12,7 +12,7 @@ public:
     Tuile(char *tab);
     void remplir(std::string ligne);
     void affiche_tuile();
-    //destructeur
+    
 };
 
 #endif
