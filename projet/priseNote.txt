@@ -1,0 +1,2 @@
+les tuiles : gauche, haut, droite, bas
+les bordures du tableau de la meme couleu[disableRipple]="true"
