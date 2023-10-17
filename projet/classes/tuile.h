@@ -13,7 +13,6 @@ public:
     void remplir(std::string ligne);
     void affiche_tuile();
     //destructeur
-    ~Tuile();
 };
 
 #endif

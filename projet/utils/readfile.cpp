@@ -42,7 +42,7 @@ void affiche_vector_tuile(vector<Tuile *> vector_tuile) {
 }
 
 void destroy_vector_tuile(vector<Tuile *> vector_tuile) {
-    for (int i = 0; i < vector_tuile.size(); i++) {
-        delete vector_tuile[i];
-    }
+    cout << "destruction du vector_tuile ..." << endl;
+    vector_tuile.clear();
+    cout << "fin de la destruction du vector_tuile" << endl;
 }
