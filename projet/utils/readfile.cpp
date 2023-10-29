@@ -37,7 +37,7 @@ vector<Tuile *> get_vector_tuile(string filename) {
 
 void affiche_vector_tuile(vector<Tuile *> vector_tuile) {
     for (int i = 0; i < vector_tuile.size(); i++) {
-        vector_tuile[i]->affiche_tuile();
+        //vector_tuile[i]->affiche_tuile();
     }
 }
 
