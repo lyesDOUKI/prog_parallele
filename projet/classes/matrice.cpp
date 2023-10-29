@@ -181,6 +181,7 @@ class Matrix
     void print_matrix(){
         
         cout << "affichage de la matrice ..." << endl;
+        cout << endl;
         for(int i = 0; i < matrix_size; i++){
             string display1 = "";
             string display2 = "";
@@ -191,6 +192,7 @@ class Matrix
             cout << display1 << endl;
             cout << display2 << endl;
             cout << display3 << endl;
+            cout << endl;
             cout << endl;
         }
         cout << "fin de l'affichage de la matrice" << endl;

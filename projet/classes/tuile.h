@@ -7,9 +7,10 @@ class Tuile {
 public:
     char *tab;
     bool isPlaced = false;
-    std::string BLEU = "\033[34mB\033[0m";
-    std::string VERT = "\033[32mG\033[0m";
-    std::string ROUGE = "\033[31mR\033[0m";
+    std::string BLEU = "\033[1;34mB\033[0m";
+    std::string VERT = "\033[1;32mG\033[0m";
+    std::string ROUGE = "\033[1;31mR\033[0m";
+
 public:
     Tuile();
     Tuile(char *tab);
