@@ -182,10 +182,15 @@ class Matrix
         
         cout << "affichage de la matrice ..." << endl;
         for(int i = 0; i < matrix_size; i++){
-            string display = "";
+            string display1 = "";
+            string display2 = "";
+            string display3 = "";
             for(int j = 0; j < matrix_size; j++){
-             matrix[i][j].affiche_tuile();
+             matrix[i][j].affiche_tuile(display1, display2, display3);
             }
+            cout << display1 << endl;
+            cout << display2 << endl;
+            cout << display3 << endl;
             cout << endl;
         }
         cout << "fin de l'affichage de la matrice" << endl;

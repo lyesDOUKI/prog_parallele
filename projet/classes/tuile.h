@@ -14,7 +14,7 @@ public:
     Tuile();
     Tuile(char *tab);
     void remplir(std::string ligne);
-    void affiche_tuile();
+    void affiche_tuile(std::string & affichage1, std::string & affichage2, std::string & affichage3);
     char * get_tab();
 };
 
