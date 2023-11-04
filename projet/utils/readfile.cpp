@@ -35,12 +35,6 @@ vector<Tuile *> get_vector_tuile(string filename) {
     return vector_tuile;
 }
 
-void affiche_vector_tuile(vector<Tuile *> vector_tuile) {
-    for (int i = 0; i < vector_tuile.size(); i++) {
-        //vector_tuile[i]->affiche_tuile();
-    }
-}
-
 void destroy_vector_tuile(vector<Tuile *> vector_tuile) {
     cout << "destruction du vector_tuile ..." << endl;
     vector_tuile.clear();
