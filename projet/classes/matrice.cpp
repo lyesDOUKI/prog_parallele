@@ -41,7 +41,7 @@ class Matrix
         cout<< "fin de la création de la matrice" << endl;
     }
     public : 
-    bool can_place_tile(Tuile* tile, int i, int j) {
+    bool can_place_tuile(Tuile* tile, int i, int j) {
     
     if(i == 0 && j == 0) {
         if(tile->get_tab()[0] != tile->get_tab()[1]) {
@@ -108,7 +108,7 @@ class Matrix
 
         for (int k = 0; k < vector_tuile.size(); k++) {
             if (!vector_tuile[k]->isPlaced) {
-                if (can_place_tile(vector_tuile[k], i, j)) {
+                if (can_place_tuile(vector_tuile[k], i, j)) {
                     matrix[i][j] = *vector_tuile[k];
                     vector_tuile[k]->isPlaced = true;
                     int nextI = i;
