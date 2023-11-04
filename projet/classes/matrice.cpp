@@ -13,11 +13,13 @@ class Matrix
     //constructor
     public:
     Matrix(int size){
+        cout <<"creation de la matrice ..."<< endl;
         matrix_size = size;
         matrix = new Tuile*[matrix_size];
         for(int i = 0; i < matrix_size; i++){
             matrix[i] = new Tuile[matrix_size];
         }
+        cout <<"fin de la creation de la matrice"<< endl;
     }
     //destructor
     ~Matrix(){

@@ -21,6 +21,7 @@ int get_taille_matrice(string filename) {
 }
 
 vector<Tuile *> get_vector_tuile(string filename) {
+    cout << "Récuperation des tuiles ..." << endl;
     ifstream fichier(filename.c_str(), ios::in);
     string ligne;
     getline(fichier, ligne);
@@ -32,6 +33,7 @@ vector<Tuile *> get_vector_tuile(string filename) {
         t->remplir(ligne);
         vector_tuile.push_back(t);
     }
+    cout << "fin de la récupération des tuiles" << endl;
     return vector_tuile;
 }
 
