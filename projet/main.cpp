@@ -23,7 +23,7 @@ int main(int argc, char *argv[]) {
     cout << "Début de l'algorithme de backtracking ..." << endl;
     result = plateau->backtracking_algorithm(vector_tuile, i, j);
     temps = clock() - temps;
-    cout << "temps d'execution : " << (float)temps/CLOCKS_PER_SEC << endl;
+    cout << "temps d'execution : " << (float)temps/CLOCKS_PER_SEC << "sec"<< endl;
     plateau->print_matrix();
     delete plateau;
     destroy_vector_tuile(vector_tuile);
