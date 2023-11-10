@@ -142,7 +142,7 @@ int main(int argc, char *argv[]) {
         vector_tuile = get_vector_tuile(argv[1]);
         vector<Tuile *> vector_tuile_a_lancer;
         vector_tuile_a_lancer = get_vector_tuile(argv[1]);
-        ThreadPoolManager* thread_pool = new ThreadPoolManager(2, taille_matrice, vector_tuile);  
+        ThreadPoolManager* thread_pool = new ThreadPoolManager(3, taille_matrice, vector_tuile);  
         thread_pool->create_vector_of_matrix();
         // faire un threadpool, lancer 2 taches, quand une se termine on rajoute une autre
 
@@ -179,7 +179,7 @@ int main(int argc, char *argv[]) {
         int indice = 2;
         while(indice < thread_pool->vector_matrix.size() && !fin_thread_pool)
         {
-            if(cpt < 2)
+            if(cpt < thread_pool->nb_thread)
             {
                 m.unlock();
                 Matrix *plateau = thread_pool->vector_matrix[indice];
