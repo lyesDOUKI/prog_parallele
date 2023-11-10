@@ -37,7 +37,6 @@ void lancer_threadpool(Matrix* plateau, vector<Tuile *> vector_tuile, string thr
     m.lock();
     cpt++;
     cout << "lancement du thread : " << thread_name << endl;
-    cout << "nombre de thread en cours : " << cpt << endl;
     m.unlock();
     int i = 0;
     int j = 0;
