@@ -170,6 +170,12 @@ int main(int argc, char *argv[]) {
             }
             
         }*/
+        if(thread_pool->vector_matrix.size() < thread_pool->nb_thread)
+        {
+            cout << "le nombre de thread est supérieur au nombre de matrice initialiser" << endl;
+            cout << "THREAD POOL IMPOSSIBLE" <<endl;
+            return 0;
+        }
         Matrix *plateau1 = thread_pool->vector_matrix[0];
         Matrix *plateau2 = thread_pool->vector_matrix[1];
        
