@@ -13,17 +13,17 @@ class Matrix
 {
     public :int matrix_size;
     private :Tuile **matrix;
-
+    private :vector<Tuile *> placement_tuile;
     //constructor
     public:
     Matrix(int size){
-        cout <<"creation de la matrice ..."<< endl;
+        //cout <<"creation de la matrice ..."<< endl;
         matrix_size = size;
         matrix = new Tuile*[matrix_size];
         for(int i = 0; i < matrix_size; i++){
             matrix[i] = new Tuile[matrix_size];
         }
-        cout <<"fin de la creation de la matrice"<< endl;
+        //cout <<"fin de la creation de la matrice"<< endl;
     }
     //destructor
     ~Matrix(){
@@ -104,7 +104,7 @@ class Matrix
     return true;
 }
     public : 
-    bool backtracking_algorithm(vector<Tuile*>& vector_tuile, int& i, int& j) {
+    bool backtracking_algorithm(vector<Tuile*> vector_tuile, int& i, int& j) {
         if (i == matrix_size) {
             cout << "############## Fin Backtracking Algorithm ##############" << endl;
             return true;
@@ -199,5 +199,22 @@ class Matrix
     std::random_device rd;
     std::mt19937 gen(rd());
     std::shuffle(vector_tuile.begin(), vector_tuile.end(), gen);
-}
+    }
+    public:
+    bool premiere_verification(Tuile * tuile)
+    {
+        if(tuile->get_tab()[0] != tuile->get_tab()[1]) {
+            return false;
+        }
+        return true;
+    }
+    public:
+    void init_matrix_with_tuile(Tuile * tuile)
+    {
+        if(premiere_verification(tuile))
+        {
+            this->matrix[0][0] = *tuile;
+        }
+    }
+
 };

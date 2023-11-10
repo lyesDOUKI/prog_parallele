@@ -3,10 +3,12 @@
 #include <vector>
 #include "./utils/readfile.h"
 #include "./classes/matrice.cpp"
+#include "./classes/threadpool.cpp"
 #include <chrono> 
 #include <thread>
 #include <atomic>
 #include <mutex>
+#include <cstring>
 using namespace std;
 
 mutex m;
@@ -101,6 +103,35 @@ int main(int argc, char *argv[]) {
     else if(choix == "P" || choix == "p")
     {
         cout << "Vous avez choisi le threadPool" << endl;
+        cout << endl;
+        vector<Tuile *> vector_tuile;
+        vector_tuile = get_vector_tuile(argv[1]);
+        vector<Tuile *> vector_tuile_a_lancer;
+        vector_tuile_a_lancer = get_vector_tuile(argv[1]);
+        ThreadPoolManager* thread_pool = new ThreadPoolManager(3, taille_matrice, vector_tuile);  
+        thread_pool->create_vector_of_matrix();
+
+        cout << "on parcours le vecteurs et on lance séquentiellement " << endl;
+        for(int a=0; a<thread_pool->vector_matrix.size(); a++)
+        {
+            cout << "matrice : " << a + 1 << endl;
+            char *tuile_placer = thread_pool->vector_matrix[a]->get_matrix()[0][0].get_tab();
+            thread_pool->vecteur_a_lancer(vector_tuile_a_lancer, tuile_placer);
+            int i = 0;
+            int j = 1;
+            bool retour = false;
+            retour = thread_pool->vector_matrix[a]->backtracking_algorithm(
+                vector_tuile_a_lancer,i,j);
+            if(retour)
+            {
+                cout << "solution trouver pour la matrice " << a + 1 << endl;
+                thread_pool->vector_matrix[a]->print_matrix();
+            }else
+            {
+                cout << "KO pour a = " << a + 1 << endl;
+            }
+            
+        }
     }
     else
     {
