@@ -12,10 +12,13 @@ using namespace std;
 mutex m;
 
 bool resolu = false;
-/*void lancer_thread(Matrix* plateau, vector<Tuile *> vector_tuile, bool& resolu, bool& result)
+void lancer_thread(Matrix* plateau, vector<Tuile *> vector_tuile, bool& resolu, bool& result)
 {
+    int i = 0;
+    int j = 0;
+    plateau->shuffle_vector_tuile(vector_tuile);
     result = plateau->backtracking_algorithm(vector_tuile, i, j, resolu);
-}*/
+}
 int main(int argc, char *argv[]) {
     cout << "Le nom du fichier en entré : " << argv[1] << endl;
     cout <<"Récuperation de la taille de la matrice ..." << endl;
@@ -40,7 +43,7 @@ int main(int argc, char *argv[]) {
     bool retour1 = false;
     bool retour2 = false;
     //creer un thread num1 avec i et j en variable local
-    m.unlock();
+    /*m.unlock();
     thread thread_num1([&]() {
         int i = 0;
         int j = 0;
@@ -76,7 +79,23 @@ int main(int argc, char *argv[]) {
     cout << "lancement des threads ..." << endl;
 
     thread_num1.join();
-    thread_num2.join();
+    thread_num2.join();*/
+
+    thread t1(lancer_thread, plateau, vector_tuile, ref(resolu), ref(retour1));
+    thread t2(lancer_thread, clone, vector_tuile_clone, ref(resolu), ref(retour2));
+    cout << "lancement des threads ..." << endl;
+    t1.join();
+    t2.join();
+    if(retour1)
+    {
+        cout << "le thread 1 a terminé en premier" << endl;
+        plateau->print_matrix();
+    }
+    if(retour2)
+    {
+        cout << "le thread 2 a terminé en premier" << endl;
+        clone->print_matrix();
+    }
 
     
     
