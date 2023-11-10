@@ -5,8 +5,11 @@
 #include "tuile.h"
 #include<random>
 #include<algorithm>
+#include<atomic>
+#include<mutex>
 using namespace std;
 
+mutex mut;
 class Matrix
 {
     public :int matrix_size;
@@ -102,16 +105,17 @@ class Matrix
     return true;
 }
     public : 
-    bool backtracking_algorithm(vector<Tuile*>& vector_tuile, int& i, int& j, bool& resolu) {
+    bool backtracking_algorithm(vector<Tuile*>& vector_tuile, int& i, int& j, 
+    bool& resolu, string thread_name) {
+         if(resolu) {
+            return false;
+        }
         
         if (i == matrix_size) {
-            cout << "############## Fin Backtracking Algorithm ##############" << endl;
             resolu = true;
             return true;
         }
-        if(resolu) {
-            return false;
-        }
+       
 
         for (int k = 0; k < vector_tuile.size(); k++) {
             if (!vector_tuile[k]->isPlaced) {
@@ -125,7 +129,7 @@ class Matrix
                         nextJ = 0;
                     }
 
-                    if (backtracking_algorithm(vector_tuile, nextI, nextJ, resolu)) {
+                    if (backtracking_algorithm(vector_tuile, nextI, nextJ, resolu, thread_name)) {
                         return true;
                     }
                     vector_tuile[k]->isPlaced = false;
