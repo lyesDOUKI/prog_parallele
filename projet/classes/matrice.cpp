@@ -3,6 +3,8 @@
 #include<thread>
 #include <vector>
 #include "tuile.h"
+#include<random>
+#include<algorithm>
 using namespace std;
 
 class Matrix
@@ -100,10 +102,15 @@ class Matrix
     return true;
 }
     public : 
-    bool backtracking_algorithm(vector<Tuile*>& vector_tuile, int& i, int& j) {
+    bool backtracking_algorithm(vector<Tuile*>& vector_tuile, int& i, int& j, bool& resolu) {
+        
         if (i == matrix_size) {
             cout << "############## Fin Backtracking Algorithm ##############" << endl;
+            resolu = true;
             return true;
+        }
+        if(resolu) {
+            return false;
         }
 
         for (int k = 0; k < vector_tuile.size(); k++) {
@@ -118,7 +125,7 @@ class Matrix
                         nextJ = 0;
                     }
 
-                    if (backtracking_algorithm(vector_tuile, nextI, nextJ)) {
+                    if (backtracking_algorithm(vector_tuile, nextI, nextJ, resolu)) {
                         return true;
                     }
                     vector_tuile[k]->isPlaced = false;
@@ -154,4 +161,14 @@ class Matrix
     {
         return this->matrix;
     }
+    public:
+    void shuffle_vector_tuile(std::vector<Tuile*>& vector_tuile) {
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    //je mélange trois fois
+    for(int i = 0; i < 3; i++) {
+        std::shuffle(vector_tuile.begin(), vector_tuile.end(), gen);
+    }
+}
 };

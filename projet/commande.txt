@@ -1,2 +1,2 @@
- g++ main.cpp utils/readfile.cpp classes/tuile.cpp -o main
+ g++ main.cpp utils/readfile.cpp classes/tuile.cpp -o main -pthread
  ./main ./resources/4x4_colorv2.txt

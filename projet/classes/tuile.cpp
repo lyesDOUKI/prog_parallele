@@ -1,6 +1,7 @@
 #include "tuile.h"
 #include <iostream>
 #include <string>
+#include<random>
 
 using namespace std;
 
@@ -62,4 +63,5 @@ void Tuile::affiche_tuile(std::string & affichage1, std::string & affichage2, st
 char *Tuile::get_tab() {
     return this->tab;
 }
+
 
