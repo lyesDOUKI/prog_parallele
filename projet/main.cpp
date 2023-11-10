@@ -58,6 +58,8 @@ void lancer_threadpool(Matrix* plateau, vector<Tuile *> vector_tuile, string thr
     {
         m.lock();
         cpt--;
+        m.unlock();
+        m.lock();
         cout << "le thread : " << thread_name << " n'a pas trouvé de solution" << endl;
         m.unlock();
         
