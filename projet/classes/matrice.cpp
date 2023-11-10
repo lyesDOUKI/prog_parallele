@@ -104,7 +104,37 @@ class Matrix
     return true;
 }
     public : 
-    bool backtracking_algorithm(vector<Tuile*>& vector_tuile, int& i, int& j, 
+    bool backtracking_algorithm(vector<Tuile*>& vector_tuile, int& i, int& j) {
+        if (i == matrix_size) {
+            cout << "############## Fin Backtracking Algorithm ##############" << endl;
+            return true;
+        }
+
+        for (int k = 0; k < vector_tuile.size(); k++) {
+            if (!vector_tuile[k]->isPlaced) {
+                if (can_place_tuile(vector_tuile[k], i, j)) {
+                    matrix[i][j] = *vector_tuile[k];
+                    vector_tuile[k]->isPlaced = true;
+                    int nextI = i;
+                    int nextJ = j + 1;
+                    if (nextJ == matrix_size) {
+                        nextI = i + 1;
+                        nextJ = 0;
+                    }
+
+                    if (backtracking_algorithm(vector_tuile, nextI, nextJ)) {
+                        return true;
+                    }
+                    vector_tuile[k]->isPlaced = false;
+                }
+            }
+        }
+
+        return false; 
+    }
+
+    public : 
+    bool backtracking_algorithm_thread_one(vector<Tuile*>& vector_tuile, int& i, int& j, 
     bool& resolu, string thread_name) {
          if(resolu) {
             return false;
@@ -128,7 +158,7 @@ class Matrix
                         nextJ = 0;
                     }
 
-                    if (backtracking_algorithm(vector_tuile, nextI, nextJ, resolu, thread_name)) {
+                    if (backtracking_algorithm_thread_one(vector_tuile, nextI, nextJ, resolu, thread_name)) {
                         return true;
                     }
                     vector_tuile[k]->isPlaced = false;
@@ -168,10 +198,6 @@ class Matrix
     void shuffle_vector_tuile(std::vector<Tuile*>& vector_tuile) {
     std::random_device rd;
     std::mt19937 gen(rd());
-
-    //je mélange trois fois
-    for(int i = 0; i < 3; i++) {
-        std::shuffle(vector_tuile.begin(), vector_tuile.end(), gen);
-    }
+    std::shuffle(vector_tuile.begin(), vector_tuile.end(), gen);
 }
 };
