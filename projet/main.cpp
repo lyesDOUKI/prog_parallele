@@ -49,7 +49,7 @@ void lancer_threadpool(Matrix* plateau, vector<Tuile *> vector_tuile, string thr
         cpt--;
         fin_thread_pool = true;
         m.unlock();
-        cout << "le thread : " << thread_name << " a terminé en premier" << endl;
+        cout << "le thread : " << thread_name << " a trouvé la solution" << endl;
         m.lock();
         plateau->print_matrix();
         m.unlock();
@@ -58,8 +58,9 @@ void lancer_threadpool(Matrix* plateau, vector<Tuile *> vector_tuile, string thr
     {
         m.lock();
         cpt--;
+        cout << "le thread : " << thread_name << " n'a pas trouvé de solution" << endl;
         m.unlock();
-        //cout << "le thread : " << thread_name << " n'a pas trouvé de solution" << endl;
+        
     }
 }
 int main(int argc, char *argv[]) {
