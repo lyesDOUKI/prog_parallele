@@ -9,7 +9,6 @@
 #include<mutex>
 using namespace std;
 
-mutex mut;
 class Matrix
 {
     public :int matrix_size;

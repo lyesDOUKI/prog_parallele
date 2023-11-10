@@ -50,9 +50,10 @@ int main(int argc, char *argv[]) {
     
     t1.join();
     temps_thread1 = clock() - temps_thread1;
-    cout << "temps d'execution du thread 1 : " << (float)temps_thread1/CLOCKS_PER_SEC << " secondes" << endl;
     t2.join();
     temps_thread2 = clock() - temps_thread2;
+    
+    cout << "temps d'execution du thread 1 : " << (float)temps_thread1/CLOCKS_PER_SEC << " secondes" << endl;
     cout << "temps d'execution du thread 2 : " << (float)temps_thread2/CLOCKS_PER_SEC << " secondes" << endl;
 
     temps = clock() - temps;
