@@ -12,8 +12,11 @@
 using namespace std;
 
 mutex m;
-
+//atomic int
+atomic<int> compteur(0);
+int cpt = 0;
 bool resolu = false;
+bool fin_thread_pool = false;
 void lancer_thread(Matrix* plateau, vector<Tuile *> vector_tuile,
 bool& resolu, bool& result, string thread_name)
 {
@@ -26,6 +29,38 @@ bool& resolu, bool& result, string thread_name)
         m.lock();
         plateau->print_matrix();
         m.unlock();
+    }
+}
+void lancer_threadpool(Matrix* plateau, vector<Tuile *> vector_tuile, string thread_name)
+{
+    
+    m.lock();
+    cpt++;
+    cout << "lancement du thread : " << thread_name << endl;
+    cout << "nombre de thread en cours : " << cpt << endl;
+    m.unlock();
+    int i = 0;
+    int j = 0;
+    bool result = false;
+    result = plateau->backtracking_algorithm_thread_one(vector_tuile, i, j,fin_thread_pool , thread_name);
+    
+    if (result)
+    {   
+        m.lock();
+        cpt--;
+        fin_thread_pool = true;
+        m.unlock();
+        cout << "le thread : " << thread_name << " a terminé en premier" << endl;
+        m.lock();
+        plateau->print_matrix();
+        m.unlock();
+    }
+    else
+    {
+        m.lock();
+        cpt--;
+        m.unlock();
+        //cout << "le thread : " << thread_name << " n'a pas trouvé de solution" << endl;
     }
 }
 int main(int argc, char *argv[]) {
@@ -108,10 +143,11 @@ int main(int argc, char *argv[]) {
         vector_tuile = get_vector_tuile(argv[1]);
         vector<Tuile *> vector_tuile_a_lancer;
         vector_tuile_a_lancer = get_vector_tuile(argv[1]);
-        ThreadPoolManager* thread_pool = new ThreadPoolManager(3, taille_matrice, vector_tuile);  
+        ThreadPoolManager* thread_pool = new ThreadPoolManager(2, taille_matrice, vector_tuile);  
         thread_pool->create_vector_of_matrix();
+        // faire un threadpool, lancer 2 taches, quand une se termine on rajoute une autre
 
-        cout << "on parcours le vecteurs et on lance séquentiellement " << endl;
+        /*cout << "on parcours le vecteurs et on lance séquentiellement " << endl;
         for(int a=0; a<thread_pool->vector_matrix.size(); a++)
         {
             cout << "matrice : " << a + 1 << endl;
@@ -131,7 +167,36 @@ int main(int argc, char *argv[]) {
                 cout << "KO pour a = " << a + 1 << endl;
             }
             
+        }*/
+        Matrix *plateau1 = thread_pool->vector_matrix[0];
+        Matrix *plateau2 = thread_pool->vector_matrix[1];
+       
+        thread_pool->vecteur_a_lancer(vector_tuile_a_lancer, plateau1->get_matrix()[0][0].get_tab());
+        thread t1(lancer_threadpool, plateau1, vector_tuile_a_lancer , "thread1");
+        thread_pool->vecteur_a_lancer(vector_tuile_a_lancer, plateau2->get_matrix()[0][0].get_tab());
+        thread t2(lancer_threadpool, plateau2, vector_tuile_a_lancer , "thread2");
+        thread_pool->vector_thread.push_back(move(t1));
+        thread_pool->vector_thread.push_back(move(t2));
+        int indice = 2;
+        while(indice < thread_pool->vector_matrix.size() && !fin_thread_pool)
+        {
+            if(cpt < 2)
+            {
+                m.unlock();
+                Matrix *plateau = thread_pool->vector_matrix[indice];
+                indice++;
+                thread_pool->vecteur_a_lancer(vector_tuile_a_lancer, 
+                plateau->get_matrix()[0][0].get_tab());
+                thread t(lancer_threadpool, plateau, vector_tuile_a_lancer, "thread" + to_string(indice));
+                thread_pool->vector_thread.push_back(move(t));
+
+            }
         }
+        for(int i=0; i<thread_pool->vector_thread.size(); i++)
+        {
+            thread_pool->vector_thread[i].join();
+        }
+        
     }
     else
     {

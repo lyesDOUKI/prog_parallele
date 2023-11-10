@@ -6,6 +6,7 @@
 #include <cstring>
 using namespace std;
 
+
 class ThreadPoolManager
 {
     public:
@@ -65,5 +66,18 @@ class ThreadPoolManager
             }
         }
     }
-    
+    public : 
+    int get_taille_bassin()
+    {
+        return this->vector_matrix.size();
+    }
+    public : 
+    void join_thread()
+    {
+        for(int i=0; i<vector_thread.size(); i++)
+        {
+            vector_thread[i].join();
+        }
+    }
+
 };
