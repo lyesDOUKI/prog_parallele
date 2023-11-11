@@ -191,6 +191,7 @@ int main(int argc, char *argv[]) {
 
         thread_pool->vecteur_a_lancer(vector_tuile_a_lancer1, plateau1->get_matrix()[0][0].get_tab());
         thread_pool->vecteur_a_lancer(vector_tuile_a_lancer2, plateau2->get_matrix()[0][0].get_tab());
+        clock_t temps = clock();
 
         thread t1(lancer_threadpool, plateau1, vector_tuile_a_lancer1, "thread1", ref(compteur));
         thread t2(lancer_threadpool, plateau2, vector_tuile_a_lancer2, "thread2", ref(compteur));
@@ -202,7 +203,7 @@ int main(int argc, char *argv[]) {
         {
             //cout << "attente de la création des 2 threads ..." << endl;
         }
-        
+
         int indice = 2;
         while(indice < thread_pool->vector_matrix.size() && !fin_thread_pool)
         {
@@ -229,6 +230,9 @@ int main(int argc, char *argv[]) {
         {
             thread_pool->vector_thread[i].join();
         }
+        temps = clock() - temps;
+        cout << endl;
+        cout << "END SUCCESS : temps d'execution de la méthode 'threadpool': " << (float)temps/CLOCKS_PER_SEC << " secondes"<< endl;
         
     }
     else
