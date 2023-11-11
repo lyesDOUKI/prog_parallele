@@ -27,12 +27,12 @@ class Matrix
     }
     //destructor
     ~Matrix(){
-        cout << "destruction de la matrice ..." << endl;
+        //cout << "destruction de la matrice ..." << endl;
         for(int i = 0; i < matrix_size; i++){
             delete[] matrix[i];
         }
         delete[] matrix;
-        cout << "fin de la destruction de la matrice" << endl;
+        //cout << "fin de la destruction de la matrice" << endl;
     }
     public: 
     void create_matrix_by_tuiles(vector<Tuile *> vector_tuile){

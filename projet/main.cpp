@@ -64,6 +64,8 @@ void lancer_threadpool(Matrix* plateau, vector<Tuile *> vector_tuile, string thr
         plateau->print_matrix();
         //m.unlock();
     }
+    delete plateau;
+    destroy_vector_tuile(vector_tuile);
     m.unlock();
 
 }
@@ -81,7 +83,9 @@ int main(int argc, char *argv[]) {
     if(choix == "R" || choix == "r")
     {
         //on va lancer 3 threads, 1 avec le vecteur lu, 2 autres avec des vecteurs mélanger
-        cout << "Vous avez choisi le thread simple" << endl;
+        cout << "Vous avez choisi la méthode thread 'Random'!" << endl;
+        cout << "Cette méthode mélange les tuiles et lance trois threads, ";
+        cout << "le premier qui termine affiche la solution" << endl;
         cout << endl;
         Matrix *plateau = new Matrix(taille_matrice);
         Matrix* clone_one = new Matrix(taille_matrice);
@@ -100,40 +104,52 @@ int main(int argc, char *argv[]) {
         bool retour2 = false;
         bool retour3 = false;
         cout << "création et lancement des threads ..." << endl;
-        clock_t temps = clock();
+        /*clock_t temps = clock();
         clock_t temps_thread1 = clock();
         clock_t temps_thread2 = clock();
-        clock_t temps_thread3 = clock();
+        clock_t temps_thread3 = clock();*/
+        auto start_time_thread1 = chrono::high_resolution_clock::now();
+        auto start_time_thread2 = chrono::high_resolution_clock::now();
+        auto start_time_thread3 = chrono::high_resolution_clock::now();
         thread t1(lancer_thread, plateau, vector_tuile, ref(resolu), ref(retour1), "thread1:vecteur-de-base");
         thread t2(lancer_thread, clone_one, vector_tuile_clone_one, ref(resolu), ref(retour2), "thread2:vecteur-random-1");
         thread t3(lancer_thread, clone_two, vector_tuile_clone_two, ref(resolu), ref(retour3), "thread3:vecteur-random-2");
         t1.join();
-        temps_thread1 = clock() - temps_thread1;
+        //temps_thread1 = clock() - temps_thread1;
+
+        auto end_time_thread1 = chrono::high_resolution_clock::now();
+        auto duration_thread1 = chrono::duration_cast<chrono::milliseconds>(end_time_thread1 - start_time_thread1);
         t2.join();
-        temps_thread2 = clock() - temps_thread2;
+        //temps_thread2 = clock() - temps_thread2;
+        auto end_time_thread2 = chrono::high_resolution_clock::now();
+        auto duration_thread2 = chrono::duration_cast<chrono::milliseconds>(end_time_thread2 - start_time_thread2);
         t3.join();
-        temps_thread3 = clock() - temps_thread3;
+        //temps_thread3 = clock() - temps_thread3;
+        auto end_time_thread3 = chrono::high_resolution_clock::now();
+        auto duration_thread3 = chrono::duration_cast<chrono::milliseconds>(end_time_thread3 - start_time_thread3);
         if(retour1)
         {   
             cout << endl;
-            cout << "THREAD 1 SUCCESS : temps d'execution du 'thread1:vecteur-de-base' : " << (float)temps_thread1/CLOCKS_PER_SEC << " secondes" << endl;
+            cout << "THREAD 1 SUCCESS : temps d'execution du 'thread1:vecteur-de-base' : ";
+            cout << duration_thread1.count()<< " milliseconds" << endl;
         }
         else if(retour2)
         {
             cout << endl;
-            cout << "THREAD 2 SUCCESS : temps d'execution du 'thread2:vecteur-random-1' : " << (float)temps_thread2/CLOCKS_PER_SEC << " secondes" << endl;
+            cout << "THREAD 2 SUCCESS : temps d'execution du 'thread1:vecteur-de-base' : ";
+            cout << duration_thread2.count()<< " milliseconds" << endl;
         }
         else if (retour3)
         {
             cout << endl;
-            cout << "THREAD 3 SUCCESS : temps d'execution du 'thread3:vecteur-random-2' : " << (float)temps_thread3/CLOCKS_PER_SEC << " secondes" << endl;
+            cout << "THREAD 3 SUCCESS : temps d'execution du 'thread1:vecteur-de-base' : ";
+            cout << duration_thread3.count() << " milliseconds" << endl;
         }
         cout << endl;
         cout << "DESTRUCTION DES PLATEAUX ..." << endl;
         delete plateau;
         delete clone_one;
         delete clone_two;
-        cout << endl;
         cout << "DESTRUCTION DES VECTEURS ..." << endl;
         destroy_vector_tuile(vector_tuile);
         destroy_vector_tuile(vector_tuile_clone_one);
@@ -141,7 +157,9 @@ int main(int argc, char *argv[]) {
     }
     else if(choix == "P" || choix == "p")
     {
-        cout << "Vous avez choisi le threadPool, cette méthode lance 2 threads simultanément" << endl;
+        cout << "Vous avez choisi la méthode 'threadPool'! "<< endl;
+        cout << "cette méthode lance 2 threads simultanément. Dés q'un thread se finit, on relance un autre" << endl;
+        cout << "NB : à chaque fin d'un thread, le plateau est détruit et le vecteur de tuiles est détruit" << endl;
         cout << endl;
         vector<Tuile *> vector_tuile;
         vector_tuile = get_vector_tuile(argv[1]);
@@ -149,41 +167,16 @@ int main(int argc, char *argv[]) {
         vector_tuile_a_lancer = get_vector_tuile(argv[1]);
         ThreadPoolManager* thread_pool = new ThreadPoolManager(2, taille_matrice, vector_tuile);  
         thread_pool->create_vector_of_matrix();
-        // faire un threadpool, lancer 2 taches, quand une se termine on rajoute une autre
-
-        /*cout << "on parcours le vecteurs et on lance séquentiellement " << endl;
-        for(int a=0; a<thread_pool->vector_matrix.size(); a++)
-        {
-            cout << "matrice : " << a + 1 << endl;
-            char *tuile_placer = thread_pool->vector_matrix[a]->get_matrix()[0][0].get_tab();
-            thread_pool->vecteur_a_lancer(vector_tuile_a_lancer, tuile_placer);
-            int i = 0;
-            int j = 1;
-            bool retour = false;
-            retour = thread_pool->vector_matrix[a]->backtracking_algorithm(
-                vector_tuile_a_lancer,i,j);
-            if(retour)
-            {
-                cout << "solution trouver pour la matrice " << a + 1 << endl;
-                thread_pool->vector_matrix[a]->print_matrix();
-            }else
-            {
-                cout << "KO pour a = " << a + 1 << endl;
-            }
-            
-        }*/
+        
         if(thread_pool->vector_matrix.size() < thread_pool->nb_thread)
         {
-            cout << "le nombre de thread est supérieur au nombre de matrice initialiser" << endl;
+            cout << "le nombre de threads à lancer est supérieur au nombre de matrice initialiser" << endl;
             cout << "THREAD POOL IMPOSSIBLE" <<endl;
             return 0;
         }
         Matrix *plateau1 = thread_pool->vector_matrix[0];
         Matrix *plateau2 = thread_pool->vector_matrix[1];
-        Matrix *plateau3 = thread_pool->vector_matrix[2];
-        bool retour1 = false;
-        bool retour2 = false;
-        bool retour3 = false;
+
         vector<Tuile *> vector_tuile_a_lancer1;
         vector_tuile_a_lancer1 = get_vector_tuile(argv[1]);
         vector<Tuile *> vector_tuile_a_lancer2;
@@ -191,8 +184,7 @@ int main(int argc, char *argv[]) {
 
         thread_pool->vecteur_a_lancer(vector_tuile_a_lancer1, plateau1->get_matrix()[0][0].get_tab());
         thread_pool->vecteur_a_lancer(vector_tuile_a_lancer2, plateau2->get_matrix()[0][0].get_tab());
-        clock_t temps = clock();
-
+        auto start_time = chrono::high_resolution_clock::now();
         thread t1(lancer_threadpool, plateau1, vector_tuile_a_lancer1, "thread1", ref(compteur));
         thread t2(lancer_threadpool, plateau2, vector_tuile_a_lancer2, "thread2", ref(compteur));
 
@@ -230,29 +222,33 @@ int main(int argc, char *argv[]) {
         {
             thread_pool->vector_thread[i].join();
         }
-        temps = clock() - temps;
-        cout << endl;
-        cout << "END SUCCESS : temps d'execution de la méthode 'threadpool': " << (float)temps/CLOCKS_PER_SEC << " secondes"<< endl;
+        auto end_time = chrono::high_resolution_clock::now();
+        auto duration = chrono::duration_cast<chrono::milliseconds>(end_time - start_time);
+        cout << "Temps d'exécution du threadpool "<< ": " << duration.count() << " milliseconds" << endl;
         
     }
     else
     {
-        cout << "Vous avez choisi la maniére séquentielle" << endl;
+        cout << "Vous avez choisi la méthode 'séquentielle'" << endl;
         cout << endl;
         Matrix *plateau = new Matrix(taille_matrice);
         vector<Tuile *> vector_tuile;
         vector_tuile = get_vector_tuile(argv[1]);
         int i = 0;
         int j = 0;
-        clock_t temps;
-        temps = clock(); 
         bool result;
+        auto start_time = chrono::high_resolution_clock::now();
         cout << "Début de l'algorithme de backtracking ..." << endl;
         result = plateau->backtracking_algorithm(vector_tuile, i, j);
+        auto end_time = chrono::high_resolution_clock::now();
+        auto duration = chrono::duration_cast<chrono::milliseconds>(end_time - start_time);
         plateau->print_matrix();
-        temps = clock() - temps;
-        cout << "END SUCCESS : temps d'execution : " << (float)temps/CLOCKS_PER_SEC << " secondes"<< endl;
+        cout << endl;
+        cout << "END SUCCESS : temps d'execution : " << duration.count() << " milliseconds"<< endl;
+        cout << endl;
+        cout << "DESTRUCTION DU PLATEAU ..." << endl;
         delete plateau;
+        cout << "DESTRUCTION DU VECTEUR DE TUILES..." << endl;
         destroy_vector_tuile(vector_tuile);
     }
     

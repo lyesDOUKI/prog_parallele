@@ -38,7 +38,7 @@ vector<Tuile *> get_vector_tuile(string filename) {
 }
 
 void destroy_vector_tuile(vector<Tuile *> vector_tuile) {
-    cout << "destruction du vector_tuile ..." << endl;
+    //cout << "destruction du vector_tuile ..." << endl;
     vector_tuile.clear();
-    cout << "fin de la destruction du vector_tuile" << endl;
+    //cout << "fin de la destruction du vector_tuile" << endl;
 }
