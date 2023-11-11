@@ -118,32 +118,32 @@ int main(int argc, char *argv[]) {
         //temps_thread1 = clock() - temps_thread1;
 
         auto end_time_thread1 = chrono::high_resolution_clock::now();
-        auto duration_thread1 = chrono::duration_cast<chrono::milliseconds>(end_time_thread1 - start_time_thread1);
+        auto duration_thread1 = chrono::duration_cast<chrono::microseconds>(end_time_thread1 - start_time_thread1);
         t2.join();
         //temps_thread2 = clock() - temps_thread2;
         auto end_time_thread2 = chrono::high_resolution_clock::now();
-        auto duration_thread2 = chrono::duration_cast<chrono::milliseconds>(end_time_thread2 - start_time_thread2);
+        auto duration_thread2 = chrono::duration_cast<chrono::microseconds>(end_time_thread2 - start_time_thread2);
         t3.join();
         //temps_thread3 = clock() - temps_thread3;
         auto end_time_thread3 = chrono::high_resolution_clock::now();
-        auto duration_thread3 = chrono::duration_cast<chrono::milliseconds>(end_time_thread3 - start_time_thread3);
+        auto duration_thread3 = chrono::duration_cast<chrono::microseconds>(end_time_thread3 - start_time_thread3);
         if(retour1)
         {   
             cout << endl;
             cout << "THREAD 1 SUCCESS : temps d'execution du 'thread1:vecteur-de-base' : ";
-            cout << duration_thread1.count()<< " milliseconds" << endl;
+            cout << duration_thread1.count() / 1000.0<< " milliseconds" << endl;
         }
         else if(retour2)
         {
             cout << endl;
-            cout << "THREAD 2 SUCCESS : temps d'execution du 'thread1:vecteur-de-base' : ";
-            cout << duration_thread2.count()<< " milliseconds" << endl;
+            cout << "THREAD 2 SUCCESS : temps d'execution du 'thread2:vecteur-random-1' : ";
+            cout << duration_thread2.count() / 1000.0 << " milliseconds" << endl;
         }
         else if (retour3)
         {
             cout << endl;
-            cout << "THREAD 3 SUCCESS : temps d'execution du 'thread1:vecteur-de-base' : ";
-            cout << duration_thread3.count() << " milliseconds" << endl;
+            cout << "THREAD 3 SUCCESS : temps d'execution du 'thread1:vecteur-random-2' : ";
+            cout << duration_thread3.count() / 1000.0 << " milliseconds" << endl;
         }
         cout << endl;
         cout << "DESTRUCTION DES PLATEAUX ..." << endl;
@@ -223,8 +223,10 @@ int main(int argc, char *argv[]) {
             thread_pool->vector_thread[i].join();
         }
         auto end_time = chrono::high_resolution_clock::now();
-        auto duration = chrono::duration_cast<chrono::milliseconds>(end_time - start_time);
-        cout << "Temps d'exécution du threadpool "<< ": " << duration.count() << " milliseconds" << endl;
+        auto duration = chrono::duration_cast<chrono::microseconds>(end_time - start_time);
+        cout << endl;
+        cout << "END SUCCESS : Temps d'exécution du threadpool :";
+        cout << duration.count() / 1000.0 << " milliseconds" << endl;
         
     }
     else
@@ -241,10 +243,10 @@ int main(int argc, char *argv[]) {
         cout << "Début de l'algorithme de backtracking ..." << endl;
         result = plateau->backtracking_algorithm(vector_tuile, i, j);
         auto end_time = chrono::high_resolution_clock::now();
-        auto duration = chrono::duration_cast<chrono::milliseconds>(end_time - start_time);
+        auto duration = chrono::duration_cast<chrono::microseconds>(end_time - start_time);
         plateau->print_matrix();
         cout << endl;
-        cout << "END SUCCESS : temps d'execution : " << duration.count() << " milliseconds"<< endl;
+        cout << "END SUCCESS : temps d'execution : " << duration.count() /1000.0 << " milliseconds"<< endl;
         cout << endl;
         cout << "DESTRUCTION DU PLATEAU ..." << endl;
         delete plateau;
