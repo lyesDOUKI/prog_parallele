@@ -135,17 +135,16 @@ class Matrix
 
     public : 
     bool backtracking_algorithm_thread_one(vector<Tuile*>& vector_tuile, int& i, int& j, 
-    bool& resolu, string thread_name) {
+    atomic<bool>& resolu, string thread_name) {
          if(resolu) {
+            //cout << "solution OK" << endl;
             return false;
         }
-        
         if (i == matrix_size) {
             resolu = true;
+            //cout << "fini" << endl;
             return true;
         }
-       
-
         for (int k = 0; k < vector_tuile.size(); k++) {
             if (!vector_tuile[k]->isPlaced) {
                 if (can_place_tuile(vector_tuile[k], i, j)) {
@@ -157,7 +156,6 @@ class Matrix
                         nextI = i + 1;
                         nextJ = 0;
                     }
-
                     if (backtracking_algorithm_thread_one(vector_tuile, nextI, nextJ, resolu, thread_name)) {
                         return true;
                     }

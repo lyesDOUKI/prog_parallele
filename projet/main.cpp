@@ -13,12 +13,12 @@ using namespace std;
 
 mutex m;
 //atomic int
-atomic<int> compteur(0);
-int cpt = 0;
-bool resolu = false;
-bool fin_thread_pool = false;
+atomic<int> compteur(2);
+int cpt_premeirs_threads = 0;
+atomic<bool> resolu(false);
+atomic<bool> fin_thread_pool(false);
 void lancer_thread(Matrix* plateau, vector<Tuile *> vector_tuile,
-bool& resolu, bool& result, string thread_name)
+atomic<bool>& resolu, bool& result, string thread_name)
 {
     int i = 0;
     int j = 0;
@@ -31,39 +31,41 @@ bool& resolu, bool& result, string thread_name)
         m.unlock();
     }
 }
-void lancer_threadpool(Matrix* plateau, vector<Tuile *> vector_tuile, string thread_name)
+
+void lancer_threadpool(Matrix* plateau, vector<Tuile *> vector_tuile, string thread_name, atomic<int>& compteur)
 {
+    if(fin_thread_pool)
+    {
+        m.lock();
+        cpt_premeirs_threads++;
+        cout << "le thread : " << thread_name << " n'a pas été lancé car le problème a ";
+        cout << "été résolu par un autre thread" << endl;
+        m.unlock();
+        return;
+    }
+    //m.unlock();
     
     m.lock();
-    cpt++;
+    cpt_premeirs_threads++;
     cout << "lancement du thread : " << thread_name << endl;
     m.unlock();
     int i = 0;
-    int j = 0;
+    int j = 1;
     bool result = false;
     result = plateau->backtracking_algorithm_thread_one(vector_tuile, i, j,fin_thread_pool , thread_name);
-    
-    if (result)
-    {   
-        m.lock();
-        cpt--;
-        fin_thread_pool = true;
-        m.unlock();
-        cout << "le thread : " << thread_name << " a trouvé la solution" << endl;
-        m.lock();
-        plateau->print_matrix();
-        m.unlock();
-    }
-    else
+    m.lock();
+    compteur--;
+    cout << "Fin du Thread : " << thread_name << " avec le statut : " << result << endl; 
+    if(result)
     {
-        m.lock();
-        cpt--;
-        m.unlock();
-        m.lock();
-        cout << "le thread : " << thread_name << " n'a pas trouvé de solution" << endl;
-        m.unlock();
-        
+        fin_thread_pool = true;
+        //m.lock();
+        cout << "le thread : " << thread_name << " a trouvé la solution" << endl;
+        plateau->print_matrix();
+        //m.unlock();
     }
+    m.unlock();
+
 }
 int main(int argc, char *argv[]) {
     cout << "Le nom du fichier en entré : " << argv[1] << endl;
@@ -139,13 +141,13 @@ int main(int argc, char *argv[]) {
     }
     else if(choix == "P" || choix == "p")
     {
-        cout << "Vous avez choisi le threadPool" << endl;
+        cout << "Vous avez choisi le threadPool, cette méthode lance 2 threads simultanément" << endl;
         cout << endl;
         vector<Tuile *> vector_tuile;
         vector_tuile = get_vector_tuile(argv[1]);
         vector<Tuile *> vector_tuile_a_lancer;
         vector_tuile_a_lancer = get_vector_tuile(argv[1]);
-        ThreadPoolManager* thread_pool = new ThreadPoolManager(3, taille_matrice, vector_tuile);  
+        ThreadPoolManager* thread_pool = new ThreadPoolManager(2, taille_matrice, vector_tuile);  
         thread_pool->create_vector_of_matrix();
         // faire un threadpool, lancer 2 taches, quand une se termine on rajoute une autre
 
@@ -178,26 +180,49 @@ int main(int argc, char *argv[]) {
         }
         Matrix *plateau1 = thread_pool->vector_matrix[0];
         Matrix *plateau2 = thread_pool->vector_matrix[1];
-       
-        thread_pool->vecteur_a_lancer(vector_tuile_a_lancer, plateau1->get_matrix()[0][0].get_tab());
-        thread t1(lancer_threadpool, plateau1, vector_tuile_a_lancer , "thread1");
-        thread_pool->vecteur_a_lancer(vector_tuile_a_lancer, plateau2->get_matrix()[0][0].get_tab());
-        thread t2(lancer_threadpool, plateau2, vector_tuile_a_lancer , "thread2");
+        Matrix *plateau3 = thread_pool->vector_matrix[2];
+        bool retour1 = false;
+        bool retour2 = false;
+        bool retour3 = false;
+        vector<Tuile *> vector_tuile_a_lancer1;
+        vector_tuile_a_lancer1 = get_vector_tuile(argv[1]);
+        vector<Tuile *> vector_tuile_a_lancer2;
+        vector_tuile_a_lancer2 = get_vector_tuile(argv[1]);
+
+        thread_pool->vecteur_a_lancer(vector_tuile_a_lancer1, plateau1->get_matrix()[0][0].get_tab());
+        thread_pool->vecteur_a_lancer(vector_tuile_a_lancer2, plateau2->get_matrix()[0][0].get_tab());
+
+        thread t1(lancer_threadpool, plateau1, vector_tuile_a_lancer1, "thread1", ref(compteur));
+        thread t2(lancer_threadpool, plateau2, vector_tuile_a_lancer2, "thread2", ref(compteur));
+
         thread_pool->vector_thread.push_back(move(t1));
         thread_pool->vector_thread.push_back(move(t2));
+
+        while(cpt_premeirs_threads < 2)
+        {
+            //cout << "attente de la création des 2 threads ..." << endl;
+        }
+        
         int indice = 2;
         while(indice < thread_pool->vector_matrix.size() && !fin_thread_pool)
         {
-            if(cpt < thread_pool->nb_thread)
+            m.lock();
+            if(compteur < thread_pool->nb_thread && !fin_thread_pool)
+            {
+                compteur ++;
+                m.unlock();
+                    Matrix *plateau = thread_pool->vector_matrix[indice];
+                    vector<Tuile *> vector_tuile_a_lancer;
+                    vector_tuile_a_lancer = get_vector_tuile(argv[1]);
+                    indice++;
+                    thread_pool->vecteur_a_lancer(vector_tuile_a_lancer, 
+                    plateau->get_matrix()[0][0].get_tab());
+                    thread t(lancer_threadpool, plateau, vector_tuile_a_lancer, 
+                                "thread" + to_string(indice), ref(compteur));
+                    thread_pool->vector_thread.push_back(move(t));
+            }else
             {
                 m.unlock();
-                Matrix *plateau = thread_pool->vector_matrix[indice];
-                indice++;
-                thread_pool->vecteur_a_lancer(vector_tuile_a_lancer, 
-                plateau->get_matrix()[0][0].get_tab());
-                thread t(lancer_threadpool, plateau, vector_tuile_a_lancer, "thread" + to_string(indice));
-                thread_pool->vector_thread.push_back(move(t));
-
             }
         }
         for(int i=0; i<thread_pool->vector_thread.size(); i++)
