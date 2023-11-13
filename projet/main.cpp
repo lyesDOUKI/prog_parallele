@@ -53,20 +53,23 @@ void lancer_threadpool(Matrix* plateau, vector<Tuile *> vector_tuile, string thr
     int j = 1;
     bool result = false;
     result = plateau->backtracking_algorithm_thread_one(vector_tuile, i, j,fin_thread_pool , thread_name);
-    m.lock();
     compteur--;
+    //m.lock();
+    //compteur--;
+    m.lock();
     cout << "Fin du Thread : " << thread_name << " avec le statut : " << result << endl; 
+    m.unlock();
     if(result)
     {
-        fin_thread_pool = true;
-        //m.lock();
+        //fin_thread_pool = true;
+        m.lock();
         cout << "le thread : " << thread_name << " a trouvé la solution" << endl;
         plateau->print_matrix();
-        //m.unlock();
+        m.unlock();
     }
     delete plateau;
     destroy_vector_tuile(vector_tuile);
-    m.unlock();
+    //m.unlock();
 
 }
 int main(int argc, char *argv[]) {
