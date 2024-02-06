@@ -161,14 +161,17 @@ int main(int argc, char *argv[]) {
     else if(choix == "P" || choix == "p")
     {
         cout << "Vous avez choisi la méthode 'threadPool'! "<< endl;
-        cout << "cette méthode lance 2 threads simultanément. Dés q'un thread se finit, on relance un autre" << endl;
+        cout << "Combien de threads voulez vous lancer en parallele ? " << endl;
+        int nombre_thread_a_lancer;
+        cin >> nombre_thread_a_lancer;
+        cout << "cette méthode lance" << nombre_thread_a_lancer <<" threads simultanément. Dés q'un thread se finit, on relance un autre" << endl;
         cout << "NB : à chaque fin d'un thread, le plateau est détruit et le vecteur de tuiles est détruit" << endl;
         cout << endl;
         vector<Tuile *> vector_tuile;
         vector_tuile = get_vector_tuile(argv[1]);
         vector<Tuile *> vector_tuile_a_lancer;
         vector_tuile_a_lancer = get_vector_tuile(argv[1]);
-        ThreadPoolManager* thread_pool = new ThreadPoolManager(2, taille_matrice, vector_tuile);  
+        ThreadPoolManager* thread_pool = new ThreadPoolManager(nombre_thread_a_lancer, taille_matrice, vector_tuile);  
         thread_pool->create_vector_of_matrix();
         
         if(thread_pool->vector_matrix.size() < thread_pool->nb_thread)
